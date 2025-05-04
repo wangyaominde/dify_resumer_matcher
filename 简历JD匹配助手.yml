@@ -1,0 +1,344 @@
+app:
+  description: ''
+  icon: 💼
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: 简历JD匹配助手
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/x:0.0.4@eaee70ddfad2258caf1de0fd980763f7da03ddd63d8ca211904738c6de403609
+kind: app
+version: 0.2.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: llm
+      id: 1745170646462-source-1745170737845-target
+      selected: false
+      source: '1745170646462'
+      sourceHandle: source
+      target: '1745170737845'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1745171301037-source-1745171037754-target
+      selected: false
+      source: '1745171301037'
+      sourceHandle: source
+      target: '1745171037754'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: document-extractor
+      id: 1745170646462-source-1745171022823-target
+      selected: false
+      source: '1745170646462'
+      sourceHandle: source
+      target: '1745171022823'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1745170737845-source-1745171037754-target
+      selected: false
+      source: '1745170737845'
+      sourceHandle: source
+      target: '1745171037754'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: document-extractor
+        targetType: llm
+      id: 1745171022823-source-1745171301037-target
+      source: '1745171022823'
+      sourceHandle: source
+      target: '1745171301037'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1745171037754-source-1745171210197-target
+      source: '1745171037754'
+      sourceHandle: source
+      target: '1745171210197'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: true
+        title: 开始
+        type: start
+        variables:
+        - label: 请输入JD
+          max_length: 1024
+          options: []
+          required: true
+          type: paragraph
+          variable: JD
+        - allowed_file_extensions: []
+          allowed_file_types:
+          - document
+          - image
+          - audio
+          - video
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          label: 简历
+          max_length: 10
+          options: []
+          required: true
+          type: file-list
+          variable: resume
+      height: 116
+      id: '1745170646462'
+      position:
+        x: 80
+        y: 283
+      positionAbsolute:
+        x: 80
+        y: 283
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: grok-3-fast-beta
+          provider: langgenius/x/x
+        prompt_template:
+        - id: 3ad6e56b-b60e-4fdb-8ad5-4c9b38335fcf
+          role: system
+          text: "        请分析以下职位描述(JD)，提取关键信息并按照指定格式返回。\n        \n        职位描述：\n\
+            \        {{#1745170646462.JD#}}\n\n        请严格按照以下JSON格式返回，不要添加任何其他内容：\n\
+            \        {{\n            \"required_skills\": [\"技能1\", \"技能2\"],\n  \
+            \          \"preferred_skills\": [\"技能1\", \"技能2\"],\n            \"education\"\
+            : {{\n                \"degree\": \"学历要求\",\n                \"major\"\
+            : \"专业要求\"\n            }},\n            \"experience\": {{\n        \
+            \        \"years\": \"年限要求\",\n                \"industry\": \"行业要求\"\
+            ,\n                \"position\": \"职位要求\"\n            }},\n         \
+            \   \"responsibilities\": [\"职责1\", \"职责2\"],\n            \"company_info\"\
+            : {{\n                \"industry\": \"所属行业\",\n                \"scale\"\
+            : \"公司规模\",\n                \"stage\": \"发展阶段\"\n            }}\n   \
+            \     }}\n\n        注意：\n        1. 必须返回完全合法的JSON格式\n        2. 所有字符串必须使用双引号，不能用单引号\n\
+            \        3. 数组至少包含一个元素\n        4. 不要添加任何额外的说明或注释\n        5. 不要添加任何前缀或后缀\n\
+            \        6. 如果信息不明确，使用合理的默认值"
+        selected: false
+        title: 分析职位描述
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1745170737845'
+      position:
+        x: 390
+        y: 454.0174106120364
+      positionAbsolute:
+        x: 390
+        y: 454.0174106120364
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        is_array_file: true
+        selected: false
+        title: 简历提取器
+        type: document-extractor
+        variable_selector:
+        - '1745170646462'
+        - resume
+      height: 92
+      id: '1745171022823'
+      position:
+        x: 390
+        y: 115
+      positionAbsolute:
+        x: 390
+        y: 115
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: grok-3-fast-beta
+          provider: langgenius/x/x
+        prompt_template:
+        - id: da2066a8-8417-4b05-8802-fb1c036dc2aa
+          role: system
+          text: "请根据以下职位要求和简历内容，生成一份最具竞争力的简历。\n个人信息使用简历中的信息，匹配职位中的要求，不要虚构\n{{#1745170737845.text#}}\n\
+            \n            可用的简历内容：\n{{#1745171301037.text#}}\n\n            要求：\n\
+            \            1. 直接返回纯文本的Markdown格式简历内容\n            2. 不要使用代码块格式\n   \
+            \         3. 不要解释或说明做了什么修改\n            4. 不要添加任何注释\n            5. 确保内容完全匹配JD要求\n\
+            \            6. 保持专业的简历格式和结构"
+        selected: false
+        title: 生成简历
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1745171037754'
+      position:
+        x: 1166.5621569336377
+        y: 283
+      positionAbsolute:
+        x: 1166.5621569336377
+        y: 283
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1745171037754'
+          - text
+          variable: text
+        selected: false
+        title: 结束
+        type: end
+      height: 90
+      id: '1745171210197'
+      position:
+        x: 1544.3414367134667
+        y: 283
+      positionAbsolute:
+        x: 1544.3414367134667
+        y: 283
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: grok-3-fast-beta
+          provider: langgenius/x/x
+        prompt_template:
+        - id: e465614c-7352-464f-80de-2b97c8036b8f
+          role: system
+          text: "        请详细分析以下简历内容，提取所有有用的信息：\n\n       {{#1745171022823.text#}}\n\
+            \        \n        请提取以下信息：\n        1. 基本信息（姓名、邮箱、电话、所在地等）\n        2.\
+            \ 教育背景（学校、学历、专业、时间等）\n        3. 工作经验（公司、职位、时间、职责等）\n        4. 项目经验（项目名称、角色、技术栈、成果等）\n\
+            \        5. 技能特长（技术技能、语言能力、其他技能等）\n        6. 证书成就（获得的证书、奖项等）\n\n    \
+            \    注意：\n        1. 保持原始表述，不要主观加工\n        2. 尽可能详细地提取信息\n        3.\
+            \ 保持信息的完整性和准确性"
+        selected: false
+        title: 简历内容提取
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1745171301037'
+      position:
+        x: 741.9375381184848
+        y: 115
+      positionAbsolute:
+        x: 741.9375381184848
+        y: 115
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -845.1494905733871
+      y: 17.541742492978983
+      zoom: 1.2362752609209557
